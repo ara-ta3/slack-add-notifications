@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"./newchannel"
+	"github.com/ara-ta3/slack-new-channel/newchannel"
 )
 
 func main() {
