@@ -45,7 +45,7 @@ func (service *ChannelNotificationService) Run() error {
 			if e != nil {
 				return e
 			}
-			fmt.Printf("%+v\n", r)
+			fmt.Printf("%+v\n", string(r))
 		case e := <-errorChan:
 			return e
 		default:
