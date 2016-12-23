@@ -36,12 +36,16 @@ func (service *ChannelNotificationService) Run() error {
 				continue
 			}
 			text := service.format.Text + fmt.Sprintf(" <#%s|%s>", msg.Channel.ID, msg.Channel.Name)
-			service.SlackClient.postMessage(
+			r, e := service.SlackClient.postMessage(
 				service.NewChannelNotificationID,
 				text,
 				service.format.UserName,
 				service.format.IconEmoji,
 			)
+			if e != nil {
+				return e
+			}
+			fmt.Printf("%+v\n", r)
 		case e := <-errorChan:
 			return e
 		default:
