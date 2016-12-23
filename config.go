@@ -3,11 +3,14 @@ package main
 import (
 	"encoding/json"
 	"os"
+
+	"./newchannel"
 )
 
 type Config struct {
-	SlackAPIToken         string `json:"slackApiToken"`
-	NotificationChannelID string `json:"notificationChannelID"`
+	SlackAPIToken         string                       `json:"slackApiToken"`
+	NotificationChannelID string                       `json:"notificationChannelID"`
+	Format                newchannel.PostMessageFormat `json:"format"`
 }
 
 func ReadConfig(path string) (*Config, error) {

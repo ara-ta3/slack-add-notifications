@@ -1,15 +1,29 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
-	"os"
 
-	"github.com/ara-ta3/slack-new-channel/newchannel"
+	"./newchannel"
 )
 
 func main() {
-	service := newchannel.NewChannelNotificationService(os.Getenv("SLACK_TOKEN"), os.Getenv("SLACK_NEW_CHANNEL_NOTIFICATION_CHANNEL_ID"))
-	e := service.Run()
+	filePath := flag.String("c", "config.json", "file path to config.json")
+	flag.Parse()
+	fmt.Printf("config filepath: %s\n", *filePath)
+	config, e := ReadConfig(*filePath)
+	if e != nil {
+		log.Fatalf("%+v", e)
+	}
+
+	service := newchannel.NewChannelNotificationService(
+		config.SlackAPIToken,
+		config.NotificationChannelID,
+		config.Format,
+	)
+
+	e = service.Run()
 	if e != nil {
 		log.Fatalf("%+v", e)
 	}

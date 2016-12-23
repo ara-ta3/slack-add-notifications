@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/pkg/errors"
-
 	"golang.org/x/net/websocket"
 )
 
@@ -25,10 +23,15 @@ type rtmStartResponse struct {
 }
 
 type slackMessage struct {
-	Type      string `json:"type"`
-	UserID    string `json:"user"`
-	Text      string `json:"text"`
-	ChannelID string `json:"channel"`
+	Type    string  `json:"type"`
+	Channel channel `json:"channel"`
+}
+
+type channel struct {
+	ID      string      `json:"id"`
+	Name    string      `json:"name"`
+	Created interface{} `json:"created"`
+	Creator string      `json:"creator"`
 }
 
 type slackClient struct {
@@ -78,23 +81,21 @@ func (cli *slackClient) polling(messageChan chan *slackMessage, errorChan chan e
 		} else {
 			message := slackMessage{}
 			err := json.Unmarshal(msg[:n], &message)
-			if err != nil {
-				errorChan <- errors.Wrap(err, fmt.Sprintf("failed to unmarshal. json: '%s'", string(msg[:n])))
-			} else {
+			if err == nil {
 				messageChan <- &message
 			}
 		}
 	}
 }
 
-func (cli *slackClient) postMessage(channelID, text, userName, iconURL string) ([]byte, error) {
+func (cli *slackClient) postMessage(channelID, text, userName, iconEmoji string) ([]byte, error) {
 	res, e := http.PostForm(slackAPIEndpoint+"chat.postMessage", url.Values{
 		"token":      {cli.Token},
 		"channel":    {channelID},
 		"text":       {text},
 		"username":   {userName},
 		"as_user":    {"false"},
-		"icon_url":   {iconURL},
+		"icon_emoji": {iconEmoji},
 		"link_names": {"0"},
 	})
 	if e != nil {

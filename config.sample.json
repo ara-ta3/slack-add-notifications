@@ -1,5 +1,9 @@
 {
 	"slackApiToken": "",
-	"timelineChannelID": "",
-	"blackListChannelIDs": []
+	"notificationChannelID": "",
+	"format": {
+		"userName": "tada",
+		"text": "A New Channel Created!!",
+		"emoji": ":tada:"
+	}
 }
