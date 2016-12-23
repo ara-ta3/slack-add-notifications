@@ -81,6 +81,7 @@ func (cli *slackClient) polling(messageChan chan *slackMessage, errorChan chan e
 		} else {
 			message := slackMessage{}
 			err := json.Unmarshal(msg[:n], &message)
+			fmt.Printf("%+v", message)
 			if err == nil {
 				messageChan <- &message
 			}
