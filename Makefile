@@ -14,9 +14,6 @@ install:
 run:
 	go run ./main.go ./config.go
 
-build:
-	GOOS=$(GOOS) GOARCH=$(GOARCH) go build
-
 build: 
 	$(goos_opt) $(goarch_opt) go build $(out_opt)
 

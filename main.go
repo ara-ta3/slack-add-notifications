@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"./newchannel"
+	"github.com/ara-ta3/slack-add-notifications/newchannel"
+	"github.com/ara-ta3/slack-add-notifications/slack"
 )
 
 func main() {
@@ -17,9 +18,12 @@ func main() {
 		log.Fatalf("%+v", e)
 	}
 
-	service := newchannel.NewChannelNotificationService(
-		config.SlackAPIToken,
-		config.NotificationChannelID,
+	service := newchannel.NewNotificationService(
+		slack.Client{
+			Token: config.SlackAPIToken,
+		},
+		config.NotificateTo.NotificationChannelID,
+		config.NotificateTo.NotificationEmojiID,
 		config.Format,
 	)
 

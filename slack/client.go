@@ -1,4 +1,4 @@
-package newchannel
+package slack
 
 import (
 	"encoding/json"
@@ -22,9 +22,11 @@ type rtmStartResponse struct {
 	Error string `json:"error"`
 }
 
-type slackMessage struct {
+type SlackMessage struct {
 	Type    string  `json:"type"`
 	Channel channel `json:"channel"`
+	Subtype string  `json:"subtype"`
+	Name    string  `json:"name"`
 }
 
 type channel struct {
@@ -34,11 +36,11 @@ type channel struct {
 	Creator string      `json:"creator"`
 }
 
-type slackClient struct {
+type Client struct {
 	Token string
 }
 
-func (cli *slackClient) connectToRTM() (*websocket.Conn, error) {
+func (cli *Client) connectToRTM() (*websocket.Conn, error) {
 	v := url.Values{
 		"token": {cli.Token},
 	}
@@ -66,7 +68,7 @@ func (cli *slackClient) connectToRTM() (*websocket.Conn, error) {
 	return ws, nil
 }
 
-func (cli *slackClient) polling(messageChan chan *slackMessage, errorChan chan error) {
+func (cli *Client) Polling(messageChan chan *SlackMessage, errorChan chan error) {
 	ws, e := cli.connectToRTM()
 	if e != nil {
 		errorChan <- e
@@ -79,7 +81,7 @@ func (cli *slackClient) polling(messageChan chan *slackMessage, errorChan chan e
 		if e != nil {
 			errorChan <- e
 		} else {
-			message := slackMessage{}
+			message := SlackMessage{}
 			err := json.Unmarshal(msg[:n], &message)
 			fmt.Printf("%+v\n", message)
 			if err == nil {
@@ -89,7 +91,7 @@ func (cli *slackClient) polling(messageChan chan *slackMessage, errorChan chan e
 	}
 }
 
-func (cli *slackClient) postMessage(channelID, text, userName, iconEmoji string) ([]byte, error) {
+func (cli *Client) PostMessage(channelID, text, userName, iconEmoji string) ([]byte, error) {
 	res, e := http.PostForm(slackAPIEndpoint+"chat.postMessage", url.Values{
 		"token":      {cli.Token},
 		"channel":    {channelID},
