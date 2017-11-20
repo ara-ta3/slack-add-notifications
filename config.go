@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/ara-ta3/slack-add-notifications/newchannel"
+	"github.com/ara-ta3/slack-add-notifications/notification"
 )
 
 type Config struct {
-	SlackAPIToken string                       `json:"slackApiToken"`
-	NotificateTo  NotificateTo                 `json:"notificationChannel"`
-	Format        newchannel.PostMessageFormat `json:"format"`
+	SlackAPIToken string                         `json:"slackApiToken"`
+	NotificateTo  NotificateTo                   `json:"notificationChannel"`
+	Format        notification.PostMessageFormat `json:"format"`
 }
 
 type NotificateTo struct {

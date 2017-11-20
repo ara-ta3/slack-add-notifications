@@ -1,4 +1,4 @@
-package newchannel
+package notification
 
 import (
 	"fmt"
