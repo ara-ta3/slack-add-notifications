@@ -30,6 +30,7 @@ type PostMessageFormat struct {
 type Message struct {
 	NewChannel string `json:"channel"`
 	NewEmoji   string `json:"emoji"`
+	TeamJoined string `json:"joined"`
 }
 
 func NewNotificationService(

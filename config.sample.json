@@ -2,13 +2,15 @@
   "slackApiToken": "",
   "notificationChannel": {
     "newChannel": "",
-    "newEmoji": ""
+    "newEmoji": "",
+    "teamJoined": ""
   },
   "format": {
     "userName": "tada",
     "message": {
       "channel": "A New Channel Created!!",
-      "emoji": "A New Emoji Created!!"
+      "emoji": "A New Emoji Created!!",
+      "joined": "Welcome to underground ..."
     },
     "emoji": ":tada:"
   },
