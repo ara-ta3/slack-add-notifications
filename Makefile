@@ -1,21 +1,25 @@
+GO=go
 GOOS=
 GOARCH=
 goos_opt=GOOS=$(GOOS)
 goarch_opt=GOARCH=$(GOARCH)
-out=slack-new-channel
+out=slack-add-notifications
 out_opt="-o $(out)"
 
 help:
 	@cat Makefile
 
 install:
-	go get golang.org/x/net/websocket
+	$(GO) mod vendor
 
-run:
-	go run ./main.go ./config.go
+run: config.json
+	$(GO) run ./main.go ./config.go
+
+config.json: config.sample.json
+	cp -f $< $@
 
 build: 
-	$(goos_opt) $(goarch_opt) go build $(out_opt)
+	$(goos_opt) $(goarch_opt) $(GO) build $(out_opt)
 
 build_for_linux:
 	$(MAKE) build GOOS=linux GOARCH=amd64 out_opt=""

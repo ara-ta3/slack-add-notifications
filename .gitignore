@@ -1,3 +1,5 @@
 config.json
 
 slack-add-notifications
+
+vendor/
