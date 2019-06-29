@@ -15,8 +15,9 @@ type Config struct {
 }
 
 type NotificateTo struct {
-	NotificationChannelID string `json:"newChannel"`
-	NotificationEmojiID   string `json:"newEmoji"`
+	NotificationChannelID    string `json:"newChannel"`
+	NotificationEmojiID      string `json:"newEmoji"`
+	NotificationTeamJoinedID string `json:"teamJoined"`
 }
 
 func ReadConfig(path string) (*Config, error) {

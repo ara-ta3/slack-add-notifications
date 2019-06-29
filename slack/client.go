@@ -27,6 +27,7 @@ type SlackMessage struct {
 	Channel channel `json:"channel"`
 	Subtype string  `json:"subtype"`
 	Name    string  `json:"name"`
+	User    user    `json:"user"`
 }
 
 type channel struct {
@@ -34,6 +35,11 @@ type channel struct {
 	Name    string      `json:"name"`
 	Created interface{} `json:"created"`
 	Creator string      `json:"creator"`
+}
+
+type user struct {
+	ID    string `json:"id"`
+	IsBot bool   `json:"is_bot"`
 }
 
 type Client struct {
@@ -76,7 +82,7 @@ func (cli *Client) Polling(messageChan chan *SlackMessage, errorChan chan error)
 	}
 	defer ws.Close()
 	for {
-		var msg = make([]byte, 1024)
+		var msg = make([]byte, 4096)
 		n, e := ws.Read(msg)
 		if e != nil {
 			errorChan <- e
