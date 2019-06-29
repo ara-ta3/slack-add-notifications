@@ -17,6 +17,8 @@ type NotificationService struct {
 	NewChannelNotificationID string
 	NewEmojiNotificationID   string
 	format                   PostMessageFormat
+	messageChannel           chan *slack.SlackMessage
+	errorChannel             chan error
 }
 
 type PostMessageFormat struct {
@@ -30,26 +32,33 @@ type Message struct {
 	NewEmoji   string `json:"emoji"`
 }
 
-func NewNotificationService(slackClient slack.Client, newChannelNotificationID, newEmojiNotificationID string, format PostMessageFormat) NotificationService {
+func NewNotificationService(
+	slackClient slack.Client,
+	newChannelNotificationID,
+	newEmojiNotificationID string,
+	format PostMessageFormat,
+	messageChannel chan *slack.SlackMessage,
+	errorChannel chan error,
+) NotificationService {
 	return NotificationService{
 		SlackClient:              slackClient,
 		NewChannelNotificationID: newChannelNotificationID,
 		NewEmojiNotificationID:   newEmojiNotificationID,
 		format:                   format,
+		messageChannel:           messageChannel,
+		errorChannel:             errorChannel,
 	}
 }
 
 func (service *NotificationService) Run() error {
-	messageChan := make(chan *slack.SlackMessage)
-	errorChan := make(chan error)
-
-	go service.SlackClient.Polling(messageChan, errorChan)
+	go service.SlackClient.Polling(service.messageChannel, service.errorChannel)
 	for {
 		select {
-		case msg := <-messageChan:
+		case msg := <-service.messageChannel:
 			if service.isNewChannelNotification(msg) {
 				e := service.postNewChannel(msg.Channel.ID, msg.Channel.Name)
 				if e != nil {
+					service.cleanUp()
 					return e
 				}
 			}
@@ -57,16 +66,15 @@ func (service *NotificationService) Run() error {
 			if service.isNewEmojiNotification(msg) {
 				e := service.postNewEmoji(msg.Name)
 				if e != nil {
+					service.cleanUp()
 					return e
 				}
 			}
-		case e := <-errorChan:
+		case e := <-service.errorChannel:
+			service.cleanUp()
 			return e
-		default:
-			break
 		}
 	}
-	return nil
 }
 
 func (service *NotificationService) postNewChannel(channelID, channelName string) error {
@@ -105,4 +113,9 @@ func (service *NotificationService) isNewChannelNotification(m *slack.SlackMessa
 
 func (service *NotificationService) isNewEmojiNotification(m *slack.SlackMessage) bool {
 	return m.Type == emojiChangedEventType && m.Subtype == emojiAddedSubEventType
+}
+
+func (service *NotificationService) cleanUp() {
+	close(service.messageChannel)
+	close(service.errorChannel)
 }
