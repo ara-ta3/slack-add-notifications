@@ -7,9 +7,10 @@ import (
 )
 
 const (
-	channelCreatedEventType = "channel_created"
-	emojiChangedEventType   = "emoji_changed"
-	emojiAddedSubEventType  = "add"
+	channelCreatedEventType   = "channel_created"
+	emojiChangedEventType     = "emoji_changed"
+	emojiAddedSubEventType    = "add"
+	memberTeamJoinedEventType = "team_joined"
 )
 
 type NotificationService struct {
@@ -119,4 +120,8 @@ func (service *NotificationService) isNewEmojiNotification(m *slack.SlackMessage
 func (service *NotificationService) cleanUp() {
 	close(service.messageChannel)
 	close(service.errorChannel)
+}
+
+func (service *NotificationService) isNewMemberJoined(m *slack.SlackMessage) bool {
+	return m.Type == memberTeamJoinedEventType
 }
