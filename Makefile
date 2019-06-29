@@ -32,3 +32,8 @@ test/new_channels:
 
 test/new_emojis:
 	curl -i -X POST localhost:8080 -d '{"type": "emoji_changed", "subtype": "add", "name": "test"}'
+
+test/team_joined: UserID=XXX
+test/team_joined:
+	curl -i -X POST localhost:8080 -d '{"type": "team_join", "user": {"id": "$(UserID)", "is_bot": false}}'
+

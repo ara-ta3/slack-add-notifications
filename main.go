@@ -28,6 +28,7 @@ func main() {
 		},
 		config.NotificateTo.NotificationChannelID,
 		config.NotificateTo.NotificationEmojiID,
+		config.NotificateTo.NotificationTeamJoinedID,
 		config.Format,
 		messageChan,
 		errorChan,

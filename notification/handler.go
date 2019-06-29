@@ -39,7 +39,6 @@ func (d *DebugHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	fmt.Println(m)
 	d.messageChannel <- m
 	w.WriteHeader(http.StatusNoContent)
 }
