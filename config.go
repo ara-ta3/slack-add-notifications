@@ -11,6 +11,7 @@ type Config struct {
 	SlackAPIToken string                         `json:"slackApiToken"`
 	NotificateTo  NotificateTo                   `json:"notificationChannel"`
 	Format        notification.PostMessageFormat `json:"format"`
+	Debug         bool                           `json:"debug"`
 }
 
 type NotificateTo struct {

@@ -26,3 +26,9 @@ build_for_linux:
 
 build_for_local:
 	$(MAKE) build goos_opt= goarch_opt= out_opt=
+
+test/new_channels:
+	curl -i -X POST localhost:8080 -d '{"type": "channel_created", "channel": {"name": "test"}}'
+
+test/new_emojis:
+	curl -i -X POST localhost:8080 -d '{"type": "emoji_changed", "subtype": "add", "name": "test"}'
